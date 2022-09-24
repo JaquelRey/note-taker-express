@@ -1,7 +1,7 @@
 //require express
 const express = require('express');
 //import router
-const noteRouter = require('./tips')
+const noteRouter = require('./notes')
 //create app with express
 const app = express();
 //use route

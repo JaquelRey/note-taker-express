@@ -19,6 +19,6 @@ const custom = (req, res, next) => {
     }
 
     next();
-}
+};
 
 exports.custom = custom
