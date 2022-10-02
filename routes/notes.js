@@ -3,6 +3,7 @@
 const noted = require('express').Router();
 const { v4: uuidv4 } = require('uuid');
 const { readAndAppend, readFromFile, readAndDelete } = require('../helpers/fsUtils');
+const dbf = require('../db/db')
 
 
 //get route for all saved notes (read db json file)
@@ -32,7 +33,7 @@ noted.post('/', (req, res) => {
         res.json(validres)
         //else error
 
-        //delete route to remove a note by id
+
     } else {
         res.json('That note wasn\'t quite right....')
     }
@@ -40,27 +41,42 @@ noted.post('/', (req, res) => {
 
 
 //bonus delete route 
+// messed it up before because I was just returning the note to be removed,
+// instead of returning a new array without the selected note
 noted.delete("/:id", (req, res) => {
-    let notes = readFromFile("./db/db.json", "utf8")
-    const noteId = req.params.id
 
-    const getNote = notes.indexOf(note => {
-        return note.id === noteId;
-    })
+    let arr = []
 
-    if (getNote) {
-        readAndDelete(getNote, 'db/db.json')
-        //(read and) append to db json using fs
-        //success response
+    let getNotes = arr.concat(dbf)
+
+    console.log(getNotes)
+
+    const findNote = req.params.id
+    
+    let noteId = 0
+
+    let note = getNotes[noteId]
+
+    console.log(note)
+
+    if (note.id === findNote ) {
+
+        getNotes.slice(noteId, (noteId + 1))
+        readAndDelete(getNotes, 'db/db.json')
+
         const validres = {
             status: 'success',
             body: `Note ID #${noteId} has been vanquished.`,
-        };
+        }
         res.json(validres)
 
-    } else {
-        res.json('Couldn\'t find a note with a matching id...')
+    } else if (findNote !== note.id && noteId === getNotes.length) {
+        res.json(`Note ID #${noteId} wasn\'t found....`)
     }
+    else {
+        noteId++
+    }
+
 })
 
 //export

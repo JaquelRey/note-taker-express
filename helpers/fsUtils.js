@@ -22,17 +22,14 @@ const readAndAppend = (content, file) => {
     }
   });
 };
+//first time around I attempted to do this by splice, which was backwards thinking
+//instead of returning the chosen index, I need to return a NEW array... filter
 
-const readAndDelete = (noteIndex, file) => {
-  fs.readFile(file, 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-    } else {
-      const parsedData = JSON.parse(data);
-      parsedData.splice(noteIndex);
-      writeToFile(file, parsedData);
-    }
-  });
+//then i realized that the read and append method works fine
+
+const readAndDelete = (newNotes, file) => {
+  const newerNotes = JSON.stringify(newNotes)
+  writeToFile(file, newerNotes);
 };
 
-module.exports = { readFromFile, writeToFile, readAndAppend, readAndDelete };
+module.exports = { readFromFile, writeToFile, readAndAppend, readAndDelete};
