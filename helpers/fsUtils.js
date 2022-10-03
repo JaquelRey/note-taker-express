@@ -10,10 +10,11 @@ const writeToFile = (destination, content) =>
   fs.writeFile(destination, JSON.stringify(content, null, 4), (err) =>
     err ? console.error(err) : console.info(`\nData written to ${destination}`)
   );
-
-const readAndAppend = (content, file) => {
+//if content is array (delete), file is only written
+//else file is read and appended
+const readWriteAppend = (content, file) => {
   if (Array.isArray(content)) {
-    console.log("Writing array over DB")
+    console.log("fsUtils....Writing array over DB")
     writeToFile(file, content);
     return;
   }
@@ -21,9 +22,8 @@ const readAndAppend = (content, file) => {
     if (err) {
       console.error(err);
     } else {
-      console.log("Writing object to DB")
+      console.log("fsUtils....Writing object to DB")
       let parsedData = JSON.parse(data);
-      console.log(parsedData)
       parsedData.push(content);
       writeToFile(file, parsedData);
     }
@@ -31,6 +31,6 @@ const readAndAppend = (content, file) => {
 };
 
 //first time around I attempted to do this by use of a new function on the fs side
-//then i realized that my issues were on the routing side. only passing readandappend 
+//then i realized that my issues were on the routing side.
 
-module.exports = { readFromFile, readAndAppend };
+module.exports = { readFromFile, readWriteAppend };

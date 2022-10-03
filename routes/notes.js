@@ -2,7 +2,7 @@
 //require helpers
 const noted = require('express').Router();
 const { v4: uuidv4 } = require('uuid');
-const { readAndAppend, readFromFile } = require('../helpers/fsUtils');
+const { readWriteAppend, readFromFile } = require('../helpers/fsUtils');
 
 
 //get route for all saved notes (read db json file)
@@ -22,7 +22,11 @@ noted.post('/', (req, res) => {
             text,
             id: uuidv4(),
         }
-        readAndAppend(note, 'db/db.json')
+        console.log(`----------------------------------------------`)
+        console.log(`Note: "${note.title}" will be be written to the data!`)
+        console.table(note)
+        console.log(`----------------------------------------------`)
+        readWriteAppend(note, 'db/db.json')
         //(read and) append to db json using fs
         //success response
         const validres = {
@@ -39,9 +43,11 @@ noted.post('/', (req, res) => {
 })
 
 
-// bonus delete route 
+// bonus: delete route 
+
 // wasn't working before because I was returning the note to be removed,
 // instead of returning a array without the selected note
+
 // ...console logging to keep track of what's going on...
 noted.delete("/:id", (req, res) => {
     //get the notes array
@@ -60,19 +66,32 @@ noted.delete("/:id", (req, res) => {
             //if a note with a matching id is found...
             if (note.id === findNote) {
                 console.log(`----------------------------------------------`)
-                console.log('Found it! Index: ', index)
-                console.log(note)
+                console.log(`Found it! Note: ${note.title} Index: ${index}`)
+                console.table(note)
                 console.log(`----------------------------------------------`)
                 //remove it from the array
                 getNotes.splice(index, 1)
                 console.log(`Note removed from data!`)
-                console.log(getNotes)
+                console.log(`Current data:`)
+                console.table(getNotes, ['title', 'id'])
                 console.log(`----------------------------------------------`)
                 //and then write new array to the file
                 console.log(`Sending new data to file....`)
-                readAndAppend(getNotes, 'db/db.json')
+                readWriteAppend(getNotes, 'db/db.json')
                 console.log(`----------------------------------------------`)
+
+                const validres = {
+                    status: 'success',
+                    body: getNotes,
+                };
+                res.json(validres)
                 break
+            }
+            if (index === getNotes.length && note.id != findNote) {
+                console.log(`----------------------------------------------`)
+                console.log(`A note with the id  ${findNote} wasn\'t found....`)
+                console.log(`----------------------------------------------`)
+                res.json(`A note with the id  ${findNote} wasn\'t found....`)
             }
         }
     })
