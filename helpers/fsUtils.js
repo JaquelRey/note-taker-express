@@ -1,4 +1,4 @@
-//this file was made by copying an example from class. (except the delete helper)
+//this file was made by copying an example from class, with modification to add functionality for this project
 
 const fs = require('fs');
 const util = require('util');
@@ -12,24 +12,25 @@ const writeToFile = (destination, content) =>
   );
 
 const readAndAppend = (content, file) => {
+  if (Array.isArray(content)) {
+    console.log("Writing array over DB")
+    writeToFile(file, content);
+    return;
+  }
   fs.readFile(file, 'utf8', (err, data) => {
     if (err) {
       console.error(err);
     } else {
-      const parsedData = JSON.parse(data);
+      console.log("Writing object to DB")
+      let parsedData = JSON.parse(data);
+      console.log(parsedData)
       parsedData.push(content);
       writeToFile(file, parsedData);
     }
   });
 };
-//first time around I attempted to do this by splice, which was backwards thinking
-//instead of returning the chosen index, I need to return a NEW array... filter
 
-//then i realized that the read and append method works fine
+//first time around I attempted to do this by use of a new function on the fs side
+//then i realized that my issues were on the routing side. only passing readandappend 
 
-const readAndDelete = (newNotes, file) => {
-  const newerNotes = JSON.stringify(newNotes)
-  writeToFile(file, newerNotes);
-};
-
-module.exports = { readFromFile, writeToFile, readAndAppend, readAndDelete};
+module.exports = { readFromFile, readAndAppend };

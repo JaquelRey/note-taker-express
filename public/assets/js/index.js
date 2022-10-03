@@ -87,11 +87,13 @@ const handleNoteDelete = (e) => {
 
   if (activeNote.id === noteId) {
     activeNote = {};
+    handleNewNoteView()
   }
 
   deleteNote(noteId).then(() => {
     getAndRenderNotes();
     renderActiveNote();
+    remove(note.parentElement)
   });
 };
 
@@ -174,14 +176,14 @@ const renderNoteList = async (notes) => {
 const getAndRenderNotes = () => getNotes().then(renderNoteList);
 
 if (window.location.pathname === '/notes') {
+  getAndRenderNotes()
   saveNoteBtn.addEventListener('click', handleNoteSave);
   newNoteBtn.addEventListener('click', handleNewNoteView);
   noteTitle.addEventListener('keyup', handleRenderSaveBtn);
   noteText.addEventListener('keyup', handleRenderSaveBtn);
-  getAndRenderNotes()
 }
 
-// JS for the 404 page
+// JS for the 404 page (which Ive realized is moot as it would go against requirements to redirect to the index page)
 const goBackBtn = document.getElementById('lostBtn');
 
 const goBack = () => {

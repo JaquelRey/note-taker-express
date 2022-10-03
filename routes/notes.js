@@ -2,8 +2,7 @@
 //require helpers
 const noted = require('express').Router();
 const { v4: uuidv4 } = require('uuid');
-const { readAndAppend, readFromFile, readAndDelete } = require('../helpers/fsUtils');
-const dbf = require('../db/db')
+const { readAndAppend, readFromFile } = require('../helpers/fsUtils');
 
 
 //get route for all saved notes (read db json file)
@@ -40,44 +39,44 @@ noted.post('/', (req, res) => {
 })
 
 
-//bonus delete route 
-// messed it up before because I was just returning the note to be removed,
-// instead of returning a new array without the selected note
+// bonus delete route 
+// wasn't working before because I was returning the note to be removed,
+// instead of returning a array without the selected note
+// ...console logging to keep track of what's going on...
 noted.delete("/:id", (req, res) => {
+    //get the notes array
+    readFromFile('db/db.json').then((data) => {
+        //grabbing current note object array
+        let getNotes = JSON.parse(data.toString())
 
-    let arr = []
+        console.log(`----------------------------------------------`)
+        //id of the note to be removed
+        const findNote = req.params.id
+        console.log(`Looking for a note with the id  ${findNote}`)
+        console.log(`----------------------------------------------`)
 
-    let getNotes = arr.concat(dbf)
-
-    console.log(getNotes)
-
-    const findNote = req.params.id
-    
-    let noteId = 0
-
-    let note = getNotes[noteId]
-
-    console.log(note)
-
-    if (note.id === findNote ) {
-
-        getNotes.slice(noteId, (noteId + 1))
-        readAndDelete(getNotes, 'db/db.json')
-
-        const validres = {
-            status: 'success',
-            body: `Note ID #${noteId} has been vanquished.`,
+        for (let index = 0; index < getNotes.length; index++) {
+            const note = getNotes[index];
+            //if a note with a matching id is found...
+            if (note.id === findNote) {
+                console.log(`----------------------------------------------`)
+                console.log('Found it! Index: ', index)
+                console.log(note)
+                console.log(`----------------------------------------------`)
+                //remove it from the array
+                getNotes.splice(index, 1)
+                console.log(`Note removed from data!`)
+                console.log(getNotes)
+                console.log(`----------------------------------------------`)
+                //and then write new array to the file
+                console.log(`Sending new data to file....`)
+                readAndAppend(getNotes, 'db/db.json')
+                console.log(`----------------------------------------------`)
+                break
+            }
         }
-        res.json(validres)
-
-    } else if (findNote !== note.id && noteId === getNotes.length) {
-        res.json(`Note ID #${noteId} wasn\'t found....`)
-    }
-    else {
-        noteId++
-    }
-
+    })
 })
 
-//export
+//export router
 module.exports = noted
