@@ -93,7 +93,6 @@ const handleNoteDelete = (e) => {
   deleteNote(noteId).then(() => {
     getAndRenderNotes();
     renderActiveNote();
-    remove(note.parentElement)
   });
 };
 
@@ -184,14 +183,14 @@ if (window.location.pathname === '/notes') {
 }
 
 // JS for the 404 page (which Ive realized is moot as it would go against requirements to redirect to the index page)
-const goBackBtn = document.getElementById('lostBtn');
+// const goBackBtn = document.getElementById('lostBtn');
 
-const goBack = () => {
-  // Built-in browser interface that allows changing the browser session history, or in this case to go back.
-  history.back();
-};
+// const goBack = () => {
+//   // Built-in browser interface that allows changing the browser session history, or in this case to go back.
+//   history.back();
+// };
 
-goBackBtn.addEventListener('click', goBack);
+// goBackBtn.addEventListener('click', goBack);
 
 
 getAndRenderNotes();
