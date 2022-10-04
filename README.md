@@ -1,6 +1,7 @@
 # Express Note Taker  
 [![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)  
 ![Screenshot of the notes page, with a note displayed. Many note titles fill a sidebar to the left.](/public/assets/images/note_taker_screenshot.PNG)
+### [Deployed to Heroku](https://note-takepurr.herokuapp.com/)
 ## Description  
 This project is a simple note taking app that saves notes as json. I built the back end as practice with REST APIs.  
 ## Table of Contents  
